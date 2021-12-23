@@ -1,0 +1,19 @@
+[Unit]
+Description=openresty
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+# 要跟 nginx.conf 中保持一致
+PIDFile=/run/nginx.pid
+Restart=always
+ExecStartPre=/usr/bin/openresty -t
+ExecStart=/usr/bin/openresty
+ExecReload=/usr/bin/openresty -s reload
+ExecStop=/bin/kill -s QUIT $MAINPID
+WorkingDirectory=/usr/local/openresty/nginx
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
