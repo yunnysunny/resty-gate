@@ -28,6 +28,15 @@ resty-gate 的设计目的是为了解决分布式集群的访问问题。大型
 3. 客户端拼接 URL 格式为 `https://gateway_domian/机房ID/服务名称/服务内部访问路径`
 4. `nginx 网关`根据服务发现得到的服务列表直接请求到具体节点
 
+## 适合什么
+
+本项目适合系统中有边缘节点的拓扑结构。即使你的系统中只有一个机房，本系统依然适用。
+
+## 不适合什么
+
+本项目不适合没有边缘节点的结构。如果你系统中通过直接把机房中的负载均衡服务器暴漏到公网上的方式来跟客户端通信的话，则不适合本项目。
+
+
 ## 配置
 
 修改 docker/usr/local/openresty/nginx/conf/service/proxy.conf 
@@ -62,9 +71,12 @@ curl  --resolve ${your_gate_domain}:80:${gate_ip} http://${your_gate_domain}/${c
 
 可以将请求发送到 resty-gate 所在机器上，这里假定 resty-gate 的暴漏端口是 80 。`${cluster_id}` 是指 consul 的 datacenter 名称，`${service_name}` 是指注册到 consul 上的应用名称，`/${service_path}` 是应用内部的访问路径。
 
+为了方便测试，专门提供了这个 [dockerfile](https://github.com/yunnysunny/cluster-deploy/blob/main/multi_cluster/docker-compose.yml) 文件，大家可以拉起一个本地 docker-compose 集群，然后做上述测试。
+
 
 ## 待做
 
 - [ ] 构建时支持自定义域名
 - [ ] 支持自定义服务过滤标签
+- [ ] 提供 http 管理接口功能
 
